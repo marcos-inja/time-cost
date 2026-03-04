@@ -32,6 +32,45 @@ describe("BrlPriceParser", () => {
     it("should return 0 for invalid input", () => {
       expect(parser.normalize("R$ ")).toBe(0);
     });
+
+    // US format (comma=thousands, dot=decimal)
+    it("should parse US format with thousands and cents", () => {
+      expect(parser.normalize("R$5,399.00")).toBe(5399);
+    });
+
+    it("should parse US format without thousands", () => {
+      expect(parser.normalize("R$955.88")).toBe(955.88);
+    });
+
+    it("should parse US format large number", () => {
+      expect(parser.normalize("R$1,327.00")).toBe(1327);
+    });
+
+    it("should parse US format with single cent digit implied", () => {
+      expect(parser.normalize("R$4,699.90")).toBe(4699.9);
+    });
+
+    // Numbers without any thousands separator
+    it("should parse number without separators", () => {
+      expect(parser.normalize("R$1199")).toBe(1199);
+    });
+
+    it("should parse number without thousands but with BRL decimal", () => {
+      expect(parser.normalize("R$1199,50")).toBe(1199.5);
+    });
+
+    it("should parse number without thousands but with US decimal", () => {
+      expect(parser.normalize("R$1199.50")).toBe(1199.5);
+    });
+
+    // Multiple thousands separators
+    it("should parse multiple dot thousands (BRL)", () => {
+      expect(parser.normalize("R$1.000.000")).toBe(1000000);
+    });
+
+    it("should parse multiple comma thousands (US)", () => {
+      expect(parser.normalize("R$1,000,000")).toBe(1000000);
+    });
   });
 
   describe("detect", () => {
@@ -106,6 +145,31 @@ describe("BrlPriceParser", () => {
       const matches = parser.detect(combined);
       expect(matches).toHaveLength(1);
       expect(matches[0].value).toBe(309.78);
+    });
+
+    // US format detection
+    it("should detect US format price (comma thousands, dot decimal)", () => {
+      const matches = parser.detect("R$5,399.00");
+      expect(matches).toHaveLength(1);
+      expect(matches[0].value).toBe(5399);
+    });
+
+    it("should detect US format price without thousands", () => {
+      const matches = parser.detect("R$955.88");
+      expect(matches).toHaveLength(1);
+      expect(matches[0].value).toBe(955.88);
+    });
+
+    it("should detect price without any separator (4+ digits)", () => {
+      const matches = parser.detect("R$1199");
+      expect(matches).toHaveLength(1);
+      expect(matches[0].value).toBe(1199);
+    });
+
+    it("should detect US format in Google Shopping style text", () => {
+      const matches = parser.detect("R$4,699.90 no Google Shopping");
+      expect(matches).toHaveLength(1);
+      expect(matches[0].value).toBe(4699.9);
     });
   });
 });

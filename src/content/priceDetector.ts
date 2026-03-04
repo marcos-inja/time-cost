@@ -1,86 +1,207 @@
-import type { PriceMatch, PriceParser } from "@/core/types";
+import type { PriceParser } from "@/core/types";
+import { BADGE_ATTR, BADGE_CLASS, SKIP_TAGS, PRICE_REGEX } from "./constants";
 
-const PROCESSED_ATTR = "data-pil-processed";
-const BADGE_CLASS = "pil-badge";
-/** Mercado Livre e outros: links/cards com preço podem ter texto longo. */
-const MAX_TEXT_LENGTH = 800;
-const SKIP_TAGS = new Set(["SCRIPT", "STYLE", "NOSCRIPT", "TEXTAREA", "SVG", "PATH"]);
+const MAX_LOOKAHEAD = 6;
+const MAX_ACCUMULATOR_LEN = 40;
+const CURRENCY_SYMBOL = "R$";
 
 export interface DetectedPrice {
-  element: Element;
-  match: PriceMatch;
+  value: number;
+  raw: string;
+  anchor: Element;
+  textNodes: Text[];
 }
 
 export class PriceDetector {
+  private processedTextNodes = new WeakSet<Text>();
+  private processedAnchors = new WeakSet<Element>();
+
   constructor(private parser: PriceParser) {}
 
   scan(root: Node): DetectedPrice[] {
-    const rootEl = this.resolveRoot(root);
-    if (!rootEl) return [];
+    const body = root instanceof Element ? root : root.parentElement;
+    if (!body?.isConnected) return [];
 
-    const candidates = this.collectCandidates(rootEl);
-    return this.filterToLeaves(candidates);
+    const results: DetectedPrice[] = [];
+    const textNodes = this.collectTextNodes(body);
+
+    let i = 0;
+    while (i < textNodes.length) {
+      const node = textNodes[i];
+
+      if (this.processedTextNodes.has(node)) {
+        i++;
+        continue;
+      }
+
+      const text = node.textContent ?? "";
+      if (!text.includes(CURRENCY_SYMBOL)) {
+        i++;
+        continue;
+      }
+
+      // Strategy 1: Inline match — full price in this single text node
+      const inlineResults = this.tryInlineMatch(node, text);
+      if (inlineResults.length > 0) {
+        for (const r of inlineResults) results.push(r);
+        i++;
+        continue;
+      }
+
+      // Strategy 2: Cross-node assembly — collect from subsequent text nodes
+      const crossResult = this.tryCrossNodeMatch(textNodes, i);
+      if (crossResult) {
+        results.push(crossResult);
+        i = crossResult._endIndex + 1;
+        continue;
+      }
+
+      i++;
+    }
+
+    return results;
   }
 
-  private resolveRoot(root: Node): Element | null {
-    if (root instanceof Element) return root;
-    if (root.nodeType === Node.TEXT_NODE) return root.parentElement;
-    if (root instanceof DocumentFragment) return root.firstElementChild;
+  private collectTextNodes(root: Element): Text[] {
+    const nodes: Text[] = [];
+    const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {
+      acceptNode(node) {
+        const el = node.parentElement;
+        if (!el) return NodeFilter.FILTER_REJECT;
+        if (SKIP_TAGS.has(el.tagName)) return NodeFilter.FILTER_REJECT;
+        if (el.classList?.contains(BADGE_CLASS)) return NodeFilter.FILTER_REJECT;
+        if (el.hasAttribute(BADGE_ATTR)) return NodeFilter.FILTER_SKIP;
+        return NodeFilter.FILTER_ACCEPT;
+      },
+    });
+
+    let current: Node | null;
+    while ((current = walker.nextNode())) {
+      nodes.push(current as Text);
+    }
+    return nodes;
+  }
+
+  private tryInlineMatch(
+    node: Text,
+    text: string
+  ): DetectedPrice[] {
+    const results: DetectedPrice[] = [];
+    const regex = new RegExp(PRICE_REGEX.source, "g");
+    let match: RegExpExecArray | null;
+
+    while ((match = regex.exec(text)) !== null) {
+      const value = this.parser.normalize(match[0]);
+      if (value <= 0) continue;
+
+      const anchor = node.parentElement;
+      if (!anchor) continue;
+
+      if (this.isAnchorProcessed(anchor)) continue;
+
+      results.push({
+        value,
+        raw: match[0],
+        anchor,
+        textNodes: [node],
+      });
+
+      this.processedTextNodes.add(node);
+      this.processedAnchors.add(anchor);
+    }
+
+    return results;
+  }
+
+  private tryCrossNodeMatch(
+    textNodes: Text[],
+    startIdx: number
+  ): (DetectedPrice & { _endIndex: number }) | null {
+    const startNode = textNodes[startIdx];
+    let accumulated = (startNode.textContent ?? "").replace(/\s+/g, " ");
+    const collectedNodes: Text[] = [startNode];
+    let endIdx = startIdx;
+
+    for (
+      let j = startIdx + 1;
+      j < textNodes.length && j <= startIdx + MAX_LOOKAHEAD;
+      j++
+    ) {
+      const nodeText = textNodes[j].textContent ?? "";
+      const trimmed = nodeText.trim();
+
+      // Skip empty/whitespace-only nodes
+      if (trimmed.length === 0) continue;
+
+      // Stop if we hit another currency symbol (new price starts)
+      if (trimmed.includes(CURRENCY_SYMBOL) && j !== startIdx) break;
+
+      accumulated += nodeText.replace(/\s+/g, " ");
+      collectedNodes.push(textNodes[j]);
+      endIdx = j;
+
+      if (accumulated.length > MAX_ACCUMULATOR_LEN) break;
+
+      // Try to match in accumulated text
+      const normalized = accumulated.replace(/\s+/g, " ").trim();
+      const regex = new RegExp(PRICE_REGEX.source, "g");
+      const match = regex.exec(normalized);
+
+      if (match) {
+        const value = this.parser.normalize(match[0]);
+        if (value <= 0) continue;
+
+        const anchor = this.findCommonAncestor(startNode, textNodes[endIdx]);
+        if (!anchor) continue;
+
+        if (this.isAnchorProcessed(anchor)) return null;
+
+        for (const n of collectedNodes) this.processedTextNodes.add(n);
+        this.processedAnchors.add(anchor);
+
+        return {
+          value,
+          raw: match[0],
+          anchor,
+          textNodes: collectedNodes,
+          _endIndex: endIdx,
+        };
+      }
+    }
+
     return null;
   }
 
-  private collectCandidates(rootEl: Element): DetectedPrice[] {
-    const candidates: DetectedPrice[] = [];
-    this.walkElements(rootEl, candidates);
-    return candidates;
-  }
-
-  /** Percorre elementos e shadow roots abertos (Mercado Livre / SPAs). */
-  private walkElements(el: Element, candidates: DetectedPrice[]): void {
-    if (PriceDetector.isProcessed(el)) return;
-    if (SKIP_TAGS.has(el.tagName)) return;
-    if (el.classList?.contains(BADGE_CLASS)) return;
-
-    this.checkElement(el, candidates);
-
-    const shadowRoot = (el as Element & { shadowRoot?: ShadowRoot }).shadowRoot;
-    if (shadowRoot) {
-      for (const child of shadowRoot.children) this.walkElements(child, candidates);
+  private findCommonAncestor(a: Node, b: Node): Element | null {
+    const ancestors = new Set<Node>();
+    let current: Node | null = a;
+    while (current) {
+      ancestors.add(current);
+      current = current.parentNode;
     }
 
-    for (const child of el.children) this.walkElements(child, candidates);
-  }
-
-  private checkElement(el: Element, candidates: DetectedPrice[]): void {
-    if (PriceDetector.isProcessed(el)) return;
-
-    const text = el.textContent ?? "";
-    if (text.length === 0 || text.length > MAX_TEXT_LENGTH) return;
-
-    const matches = this.parser.detect(text);
-    if (matches.length > 0) {
-      candidates.push({ element: el, match: matches[0] });
+    current = b;
+    while (current) {
+      if (ancestors.has(current) && current instanceof Element) return current;
+      current = current.parentNode;
     }
+
+    return null;
   }
 
-  /**
-   * Keeps only "leaf" candidates: elements with no descendant
-   * that is also a candidate. This ensures we annotate the most
-   * specific element containing the price.
-   */
-  private filterToLeaves(candidates: DetectedPrice[]): DetectedPrice[] {
-    return candidates.filter((candidate) =>
-      !candidates.some(
-        (other) => other !== candidate && candidate.element.contains(other.element)
-      )
-    );
-  }
+  private isAnchorProcessed(el: Element): boolean {
+    if (this.processedAnchors.has(el)) return true;
 
-  static markProcessed(element: Element): void {
-    element.setAttribute(PROCESSED_ATTR, "true");
-  }
+    // Check if any ancestor is already processed (avoids duplicate badges
+    // e.g. Amazon's a-offscreen + visible split nodes in the same a-price)
+    let current: Element | null = el.parentElement;
+    let depth = 0;
+    while (current && current !== document.body && depth < 8) {
+      if (this.processedAnchors.has(current)) return true;
+      current = current.parentElement;
+      depth++;
+    }
 
-  static isProcessed(element: Element): boolean {
-    return element.hasAttribute(PROCESSED_ATTR);
+    return false;
   }
 }
