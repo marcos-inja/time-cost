@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Time Cost",
   "version": "1.0.0",
-  "description": "Veja quanto tempo de trabalho cada preço custa. Converte preços em horas e dias.",
+  "description": "See how much working time each price costs. Converts prices into hours and days.",
   "icons": {
     "16": "public/icons/icon16.png",
     "48": "public/icons/icon48.png",
