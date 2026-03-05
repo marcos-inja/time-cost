@@ -1,8 +1,10 @@
+import type { TranslationKeys } from "@/i18n/translations";
 import styles from "./ThemeToggle.module.css";
 
 interface ThemeToggleProps {
   isDark: boolean;
   onToggle: () => void;
+  t: TranslationKeys;
 }
 
 function SunIcon({ className }: { className?: string }) {
@@ -44,14 +46,14 @@ function MoonIcon({ className }: { className?: string }) {
   );
 }
 
-export function ThemeToggle({ isDark, onToggle }: ThemeToggleProps) {
+export function ThemeToggle({ isDark, onToggle, t }: ThemeToggleProps) {
   return (
     <button
       type="button"
       className={styles.toggle}
       onClick={onToggle}
-      aria-label={isDark ? "Mudar para tema claro" : "Mudar para tema escuro"}
-      title={isDark ? "Tema claro" : "Tema escuro"}
+      aria-label={isDark ? t.switchToLight : t.switchToDark}
+      title={isDark ? t.lightTheme : t.darkTheme}
     >
       {isDark ? (
         <SunIcon className={styles.icon} />

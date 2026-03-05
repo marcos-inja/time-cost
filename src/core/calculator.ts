@@ -6,6 +6,7 @@ import {
   WEEKS_PER_MONTH,
   MONTHS_PER_YEAR,
 } from "./types";
+import type { TranslationKeys } from "@/i18n/translations";
 
 export class SimpleCalculation implements CalculationStrategy {
   deriveProfile(settings: UserSettings): DerivedWorkProfile {
@@ -33,12 +34,12 @@ export class SimpleCalculation implements CalculationStrategy {
   }
 }
 
-export function formatTimeBreakdown(breakdown: TimeBreakdown): string {
-  if (breakdown.anos >= 1) return `${breakdown.anos.toFixed(1)} anos`;
-  if (breakdown.meses >= 1) return `${breakdown.meses.toFixed(1)} meses`;
-  if (breakdown.semanas >= 1) return `${breakdown.semanas.toFixed(1)} sem`;
-  if (breakdown.dias >= 1) return `${breakdown.dias.toFixed(1)} dias`;
-  return `${breakdown.horas.toFixed(1)}h`;
+export function formatTimeBreakdown(breakdown: TimeBreakdown, t: TranslationKeys): string {
+  if (breakdown.anos >= 1) return `${breakdown.anos.toFixed(1)} ${t.yearsShort}`;
+  if (breakdown.meses >= 1) return `${breakdown.meses.toFixed(1)} ${t.monthsShort}`;
+  if (breakdown.semanas >= 1) return `${breakdown.semanas.toFixed(1)} ${t.weeksShort}`;
+  if (breakdown.dias >= 1) return `${breakdown.dias.toFixed(1)} ${t.daysShort}`;
+  return `${breakdown.horas.toFixed(1)}${t.hoursShort}`;
 }
 
 export function formatHours(breakdown: TimeBreakdown): string {

@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
 import type { UserSettings, DerivedWorkProfile } from "@/core/types";
+import type { TranslationKeys } from "@/i18n/translations";
+import { getCurrencyConfig, getSupportedCurrencies, getSupportedLanguages } from "@/i18n";
 import styles from "./SettingsForm.module.css";
 
 interface SettingsFormProps {
@@ -8,9 +10,10 @@ interface SettingsFormProps {
   saved: boolean;
   onSave: (updates: Partial<UserSettings>) => Promise<void>;
   onReset: () => Promise<void>;
+  t: TranslationKeys;
 }
 
-export function SettingsForm({ settings, profile, saved, onSave, onReset }: SettingsFormProps) {
+export function SettingsForm({ settings, profile, saved, onSave, onReset, t }: SettingsFormProps) {
   const [rendaMensal, setRendaMensal] = useState("");
   const [horasPorDia, setHorasPorDia] = useState("");
   const [diasPorSemana, setDiasPorSemana] = useState("");
@@ -30,21 +33,55 @@ export function SettingsForm({ settings, profile, saved, onSave, onReset }: Sett
     });
   };
 
+  const currencyConfig = getCurrencyConfig(settings.currency);
+
   const formatCurrency = (value: number): string => {
-    return value.toLocaleString("pt-BR", {
+    return value.toLocaleString(currencyConfig.locale, {
       style: "currency",
-      currency: "BRL",
+      currency: currencyConfig.code,
     });
   };
 
   return (
     <form className={styles.form} onSubmit={handleSubmit}>
       <section className={styles.section}>
-        <h2 className={styles.sectionTitle}>Configuração</h2>
+        <h2 className={styles.sectionTitle}>{t.settings}</h2>
         <div className={styles.fields}>
           <div className={styles.field}>
+            <label className={styles.label} htmlFor="currency">
+              {t.currency}
+            </label>
+            <select
+              id="currency"
+              className={styles.input}
+              value={settings.currency}
+              onChange={(e) => onSave({ currency: e.target.value })}
+            >
+              {getSupportedCurrencies().map((c) => (
+                <option key={c.code} value={c.code}>{c.label}</option>
+              ))}
+            </select>
+          </div>
+
+          <div className={styles.field}>
+            <label className={styles.label} htmlFor="language">
+              {t.language}
+            </label>
+            <select
+              id="language"
+              className={styles.input}
+              value={settings.language}
+              onChange={(e) => onSave({ language: e.target.value })}
+            >
+              {getSupportedLanguages().map((l) => (
+                <option key={l.code} value={l.code}>{l.label}</option>
+              ))}
+            </select>
+          </div>
+
+          <div className={styles.field}>
             <label className={styles.label} htmlFor="rendaMensal">
-              Renda mensal (R$)
+              {t.monthlyIncome} ({currencyConfig.symbol})
             </label>
             <input
               id="rendaMensal"
@@ -60,7 +97,7 @@ export function SettingsForm({ settings, profile, saved, onSave, onReset }: Sett
 
           <div className={styles.field}>
             <label className={styles.label} htmlFor="horasPorDia">
-              Horas por dia
+              {t.hoursPerDay}
             </label>
             <input
               id="horasPorDia"
@@ -77,7 +114,7 @@ export function SettingsForm({ settings, profile, saved, onSave, onReset }: Sett
 
           <div className={styles.field}>
             <label className={styles.label} htmlFor="diasPorSemana">
-              Dias por semana
+              {t.daysPerWeek}
             </label>
             <input
               id="diasPorSemana"
@@ -97,13 +134,13 @@ export function SettingsForm({ settings, profile, saved, onSave, onReset }: Sett
       {settings.rendaMensal > 0 && (
         <div className={styles.derived}>
           <div className={styles.derivedItem}>
-            <span className={styles.derivedLabel}>Valor/hora</span>
+            <span className={styles.derivedLabel}>{t.hourlyRate}</span>
             <span className={styles.derivedValue}>
               {formatCurrency(profile.valorHora)}
             </span>
           </div>
           <div className={styles.derivedItem}>
-            <span className={styles.derivedLabel}>Horas/mes</span>
+            <span className={styles.derivedLabel}>{t.hoursPerMonth}</span>
             <span className={styles.derivedValue}>
               {profile.horasMes.toFixed(0)}h
             </span>
@@ -113,15 +150,15 @@ export function SettingsForm({ settings, profile, saved, onSave, onReset }: Sett
 
       <div className={styles.actions}>
         <button type="submit" className={styles.saveBtn}>
-          Salvar
+          {t.save}
         </button>
         <button type="button" className={styles.resetBtn} onClick={onReset}>
-          Resetar
+          {t.reset}
         </button>
       </div>
 
       <div className={styles.feedback}>
-        {saved && <span className={styles.saved}>Salvo com sucesso!</span>}
+        {saved && <span className={styles.saved}>{t.savedSuccess}</span>}
       </div>
     </form>
   );

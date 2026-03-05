@@ -1,4 +1,5 @@
 import type { UserSettings } from "@/core/types";
+import type { TranslationKeys } from "@/i18n/translations";
 import { SimpleCalculation, formatTimeBreakdown } from "@/core/calculator";
 import { TooltipBuilder } from "./tooltip";
 import type { DetectedPrice } from "./priceDetector";
@@ -7,7 +8,7 @@ import { BADGE_CLASS, BADGE_ATTR, BADGE_STYLE } from "./constants";
 export class PriceAnnotator {
   private calculator = new SimpleCalculation();
 
-  annotate(detected: DetectedPrice[], settings: UserSettings): number {
+  annotate(detected: DetectedPrice[], settings: UserSettings, t: TranslationKeys): number {
     if (settings.rendaMensal <= 0) return 0;
 
     let count = 0;
@@ -23,10 +24,10 @@ export class PriceAnnotator {
       const badge = document.createElement("span");
       badge.className = BADGE_CLASS;
       badge.style.cssText = BADGE_STYLE;
-      badge.textContent = ` (${formatTimeBreakdown(breakdown)})`;
+      badge.textContent = ` (${formatTimeBreakdown(breakdown, t)})`;
 
       const tooltip = new TooltipBuilder();
-      tooltip.setContent(breakdown);
+      tooltip.setContent(breakdown, t);
       tooltip.attachTo(badge);
 
       parent.insertBefore(badge, anchor.nextSibling);

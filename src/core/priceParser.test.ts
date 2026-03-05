@@ -1,5 +1,11 @@
 import { describe, it, expect } from "vitest";
-import { BrlPriceParser, PriceParserFactory } from "./priceParser";
+import {
+  BrlPriceParser,
+  UsdPriceParser,
+  EurPriceParser,
+  GbpPriceParser,
+  PriceParserFactory,
+} from "./priceParser";
 
 describe("BrlPriceParser", () => {
   const parser = new BrlPriceParser();
@@ -174,6 +180,107 @@ describe("BrlPriceParser", () => {
   });
 });
 
+describe("UsdPriceParser", () => {
+  const parser = new UsdPriceParser();
+
+  describe("normalize", () => {
+    it("should parse $1,299.90", () => {
+      expect(parser.normalize("$1,299.90")).toBe(1299.9);
+    });
+
+    it("should parse US$5,399.00", () => {
+      expect(parser.normalize("US$5,399.00")).toBe(5399);
+    });
+
+    it("should parse $199.90", () => {
+      expect(parser.normalize("$199.90")).toBe(199.9);
+    });
+
+    it("should parse $1199", () => {
+      expect(parser.normalize("$1199")).toBe(1199);
+    });
+  });
+
+  describe("detect", () => {
+    it("should find USD price in text", () => {
+      const matches = parser.detect("The price is $1,299.90 with shipping");
+      expect(matches).toHaveLength(1);
+      expect(matches[0].value).toBe(1299.9);
+    });
+
+    it("should find US$ format", () => {
+      const matches = parser.detect("US$5,399.00");
+      expect(matches).toHaveLength(1);
+      expect(matches[0].value).toBe(5399);
+    });
+
+    it("should NOT match R$ (BRL)", () => {
+      const matches = parser.detect("R$1,299.90");
+      expect(matches).toHaveLength(0);
+    });
+  });
+});
+
+describe("EurPriceParser", () => {
+  const parser = new EurPriceParser();
+
+  describe("normalize", () => {
+    it("should parse €1.299,90", () => {
+      expect(parser.normalize("€1.299,90")).toBe(1299.9);
+    });
+
+    it("should parse €199.90", () => {
+      expect(parser.normalize("€199.90")).toBe(199.9);
+    });
+
+    it("should parse 1.299,90€ (suffix)", () => {
+      expect(parser.normalize("1.299,90€")).toBe(1299.9);
+    });
+  });
+
+  describe("detect", () => {
+    it("should find EUR price with prefix symbol", () => {
+      const matches = parser.detect("Price: €1.299,90");
+      expect(matches).toHaveLength(1);
+      expect(matches[0].value).toBe(1299.9);
+    });
+
+    it("should find EUR price with suffix symbol", () => {
+      const matches = parser.detect("Price: 1.299,90€");
+      expect(matches).toHaveLength(1);
+      expect(matches[0].value).toBe(1299.9);
+    });
+  });
+});
+
+describe("GbpPriceParser", () => {
+  const parser = new GbpPriceParser();
+
+  describe("normalize", () => {
+    it("should parse £1,299.90", () => {
+      expect(parser.normalize("£1,299.90")).toBe(1299.9);
+    });
+
+    it("should parse £199.90", () => {
+      expect(parser.normalize("£199.90")).toBe(199.9);
+    });
+  });
+
+  describe("detect", () => {
+    it("should find GBP price in text", () => {
+      const matches = parser.detect("Price: £1,299.90");
+      expect(matches).toHaveLength(1);
+      expect(matches[0].value).toBe(1299.9);
+    });
+
+    it("should find price without thousands separator", () => {
+      const matches = parser.detect("£199.90");
+      expect(matches).toHaveLength(1);
+      expect(matches[0].value).toBe(199.9);
+    });
+  });
+});
+
 describe("PriceParserFactory", () => {
   it("should return BRL parser by default", () => {
     const parser = PriceParserFactory.getDefault();
@@ -183,6 +290,21 @@ describe("PriceParserFactory", () => {
   it("should return BRL parser when requested", () => {
     const parser = PriceParserFactory.getParser("BRL");
     expect(parser.currencySymbol).toBe("R$");
+  });
+
+  it("should return USD parser when requested", () => {
+    const parser = PriceParserFactory.getDefault("USD");
+    expect(parser.currencySymbol).toBe("$");
+  });
+
+  it("should return EUR parser when requested", () => {
+    const parser = PriceParserFactory.getDefault("EUR");
+    expect(parser.currencySymbol).toBe("€");
+  });
+
+  it("should return GBP parser when requested", () => {
+    const parser = PriceParserFactory.getDefault("GBP");
+    expect(parser.currencySymbol).toBe("£");
   });
 
   it("should throw for unknown currency", () => {

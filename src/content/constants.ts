@@ -9,12 +9,6 @@ export const SKIP_TAGS = new Set([
   "PATH",
 ]);
 
-// Matches R$ prices in both BRL format (1.199,50) and US format (5,399.00)
-// Alt 1: numbers without thousands separators (4+ digits) with optional decimal
-// Alt 2: numbers with thousands separators (dot or comma + 3 digits) with optional decimal
-export const PRICE_REGEX =
-  /R\$\s*(?:\d{4,}(?:[.,]\d{1,2})?|\d{1,3}(?:[.,]\d{3})*(?:[.,]\d{1,2})?)/g;
-
 export const BADGE_STYLE = [
   "font-size:0.8em",
   "font-weight:600",

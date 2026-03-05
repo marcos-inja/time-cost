@@ -1,12 +1,17 @@
 import { describe, it, expect } from "vitest";
 import { SimpleCalculation, formatTimeBreakdown, formatHours } from "./calculator";
 import type { UserSettings, TimeBreakdown } from "./types";
+import { getTranslation } from "@/i18n";
+
+const t = getTranslation("pt-BR");
 
 const baseSettings: UserSettings = {
   rendaMensal: 5000,
   horasPorDia: 8,
   diasPorSemana: 5,
   theme: "light",
+  currency: "BRL",
+  language: "pt-BR",
 };
 
 describe("SimpleCalculation", () => {
@@ -74,27 +79,27 @@ describe("SimpleCalculation", () => {
 describe("formatTimeBreakdown", () => {
   it("should format as hours for small values", () => {
     const b: TimeBreakdown = { horas: 0.5, dias: 0.06, semanas: 0.01, meses: 0.003, anos: 0.0002 };
-    expect(formatTimeBreakdown(b)).toBe("0.5h");
+    expect(formatTimeBreakdown(b, t)).toBe("0.5h");
   });
 
   it("should format as days when >= 1 day", () => {
     const b: TimeBreakdown = { horas: 16, dias: 2, semanas: 0.4, meses: 0.09, anos: 0.008 };
-    expect(formatTimeBreakdown(b)).toBe("2.0 dias");
+    expect(formatTimeBreakdown(b, t)).toBe("2.0 dias");
   });
 
   it("should format as weeks when >= 1 week", () => {
     const b: TimeBreakdown = { horas: 80, dias: 10, semanas: 2, meses: 0.46, anos: 0.04 };
-    expect(formatTimeBreakdown(b)).toBe("2.0 sem");
+    expect(formatTimeBreakdown(b, t)).toBe("2.0 sem");
   });
 
   it("should format as months when >= 1 month", () => {
     const b: TimeBreakdown = { horas: 346, dias: 43, semanas: 8.7, meses: 2, anos: 0.17 };
-    expect(formatTimeBreakdown(b)).toBe("2.0 meses");
+    expect(formatTimeBreakdown(b, t)).toBe("2.0 meses");
   });
 
   it("should format as years when >= 1 year", () => {
     const b: TimeBreakdown = { horas: 2078, dias: 260, semanas: 52, meses: 12, anos: 1 };
-    expect(formatTimeBreakdown(b)).toBe("1.0 anos");
+    expect(formatTimeBreakdown(b, t)).toBe("1.0 anos");
   });
 });
 

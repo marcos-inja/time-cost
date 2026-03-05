@@ -1,9 +1,8 @@
 import type { PriceParser } from "@/core/types";
-import { BADGE_ATTR, BADGE_CLASS, SKIP_TAGS, PRICE_REGEX } from "./constants";
+import { BADGE_ATTR, BADGE_CLASS, SKIP_TAGS } from "./constants";
 
 const MAX_LOOKAHEAD = 6;
 const MAX_ACCUMULATOR_LEN = 40;
-const CURRENCY_SYMBOL = "R$";
 
 export interface DetectedPrice {
   value: number;
@@ -35,7 +34,7 @@ export class PriceDetector {
       }
 
       const text = node.textContent ?? "";
-      if (!text.includes(CURRENCY_SYMBOL)) {
+      if (!text.includes(this.parser.currencySymbol)) {
         i++;
         continue;
       }
@@ -87,7 +86,7 @@ export class PriceDetector {
     text: string
   ): DetectedPrice[] {
     const results: DetectedPrice[] = [];
-    const regex = new RegExp(PRICE_REGEX.source, "g");
+    const regex = new RegExp(this.parser.priceRegex.source, "g");
     let match: RegExpExecArray | null;
 
     while ((match = regex.exec(text)) !== null) {
@@ -134,7 +133,7 @@ export class PriceDetector {
       if (trimmed.length === 0) continue;
 
       // Stop if we hit another currency symbol (new price starts)
-      if (trimmed.includes(CURRENCY_SYMBOL) && j !== startIdx) break;
+      if (trimmed.includes(this.parser.currencySymbol) && j !== startIdx) break;
 
       accumulated += nodeText.replace(/\s+/g, " ");
       collectedNodes.push(textNodes[j]);
@@ -144,7 +143,7 @@ export class PriceDetector {
 
       // Try to match in accumulated text
       const normalized = accumulated.replace(/\s+/g, " ").trim();
-      const regex = new RegExp(PRICE_REGEX.source, "g");
+      const regex = new RegExp(this.parser.priceRegex.source, "g");
       const match = regex.exec(normalized);
 
       if (match) {

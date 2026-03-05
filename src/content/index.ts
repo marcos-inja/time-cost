@@ -1,6 +1,7 @@
 import type { UserSettings } from "@/core/types";
 import { DEFAULT_SETTINGS } from "@/core/types";
-import { BrlPriceParser } from "@/core/priceParser";
+import { PriceParserFactory } from "@/core/priceParser";
+import { getTranslation } from "@/i18n";
 import { PriceDetector } from "./priceDetector";
 import { PriceAnnotator } from "./priceAnnotator";
 import { PriceObserver } from "./priceObserver";
@@ -26,19 +27,20 @@ async function main(): Promise<void> {
 
   if (settings.rendaMensal <= 0) {
     console.warn(
-      "[TimeCost] rendaMensal is 0. Configure in the extension popup. Using R$5000 as fallback."
+      "[TimeCost] rendaMensal is 0. Configure in the extension popup. Using 5000 as fallback."
     );
     settings.rendaMensal = 5000;
   }
 
-  const parser = new BrlPriceParser();
+  const t = getTranslation(settings.language);
+  const parser = PriceParserFactory.getDefault(settings.currency);
   const detector = new PriceDetector(parser);
   const annotator = new PriceAnnotator();
 
   const runScan = () => {
     if (!document.body?.isConnected) return;
     const detected = detector.scan(document.body);
-    const count = annotator.annotate(detected, settings);
+    const count = annotator.annotate(detected, settings, t);
     if (count > 0) {
       console.log(`[TimeCost] Annotated ${count} prices`);
     }

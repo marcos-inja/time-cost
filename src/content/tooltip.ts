@@ -1,4 +1,5 @@
 import type { TimeBreakdown } from "@/core/types";
+import type { TranslationKeys } from "@/i18n/translations";
 import tooltipCss from "./tooltip.css?inline";
 
 export interface TooltipRow {
@@ -6,13 +7,13 @@ export interface TooltipRow {
   value: string;
 }
 
-export function formatRows(breakdown: TimeBreakdown): TooltipRow[] {
+export function formatRows(breakdown: TimeBreakdown, t: TranslationKeys): TooltipRow[] {
   return [
-    { label: "Horas", value: `${breakdown.horas.toFixed(1)}h` },
-    { label: "Dias", value: `${breakdown.dias.toFixed(1)} dias` },
-    { label: "Semanas", value: `${breakdown.semanas.toFixed(1)} sem` },
-    { label: "Meses", value: `${breakdown.meses.toFixed(2)} meses` },
-    { label: "Anos", value: `${breakdown.anos.toFixed(2)} anos` },
+    { label: t.hours, value: `${breakdown.horas.toFixed(1)}${t.hoursShort}` },
+    { label: t.days, value: `${breakdown.dias.toFixed(1)} ${t.daysShort}` },
+    { label: t.weeks, value: `${breakdown.semanas.toFixed(1)} ${t.weeksShort}` },
+    { label: t.months, value: `${breakdown.meses.toFixed(2)} ${t.monthsShort}` },
+    { label: t.years, value: `${breakdown.anos.toFixed(2)} ${t.yearsShort}` },
   ];
 }
 
@@ -38,9 +39,9 @@ export class TooltipBuilder {
     this.shadowRoot.appendChild(this.tooltipEl);
   }
 
-  setContent(breakdown: TimeBreakdown): this {
+  setContent(breakdown: TimeBreakdown, t: TranslationKeys): this {
     this.tooltipEl.innerHTML = "";
-    const rows = formatRows(breakdown);
+    const rows = formatRows(breakdown, t);
 
     for (const row of rows) {
       const rowEl = document.createElement("div");

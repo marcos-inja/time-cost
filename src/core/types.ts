@@ -3,6 +3,8 @@ export interface UserSettings {
   horasPorDia: number;
   diasPorSemana: number;
   theme: "light" | "dark";
+  currency: string;
+  language: string;
 }
 
 export interface TimeBreakdown {
@@ -26,6 +28,7 @@ export interface CalculationStrategy {
 
 export interface PriceParser {
   readonly currencySymbol: string;
+  readonly priceRegex: RegExp;
   detect(text: string): PriceMatch[];
   normalize(raw: string): number;
 }
@@ -48,6 +51,8 @@ export const DEFAULT_SETTINGS: UserSettings = {
   horasPorDia: 8,
   diasPorSemana: 5,
   theme: "light",
+  currency: "BRL",
+  language: "pt-BR",
 };
 
 export const WEEKS_PER_MONTH = 4.33;

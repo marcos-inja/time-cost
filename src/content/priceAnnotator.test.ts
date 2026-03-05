@@ -2,10 +2,13 @@ import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { PriceAnnotator } from "./priceAnnotator";
 import type { DetectedPrice } from "./priceDetector";
 import type { UserSettings } from "@/core/types";
+import { getTranslation } from "@/i18n";
 import { BADGE_CLASS, BADGE_ATTR } from "./constants";
 
 // Mock do CSS inline do tooltip (não existe em ambiente de teste)
 vi.mock("./tooltip.css?inline", () => ({ default: "" }));
+
+const t = getTranslation("pt-BR");
 
 /**
  * Testes do PriceAnnotator — responsável por criar badges visuais
@@ -23,6 +26,8 @@ const defaultSettings: UserSettings = {
   horasPorDia: 8,
   diasPorSemana: 5,
   theme: "light",
+  currency: "BRL",
+  language: "pt-BR",
 };
 
 let container: HTMLElement;
@@ -59,7 +64,7 @@ describe("PriceAnnotator", () => {
       const annotator = new PriceAnnotator();
       const detected = [createDetectedPrice(1000)];
 
-      annotator.annotate(detected, defaultSettings);
+      annotator.annotate(detected, defaultSettings, t);
 
       const badge = container.querySelector(`.${BADGE_CLASS}`);
       expect(badge).not.toBeNull();
@@ -70,7 +75,7 @@ describe("PriceAnnotator", () => {
       const annotator = new PriceAnnotator();
       const detected = [createDetectedPrice(1000)];
 
-      annotator.annotate(detected, defaultSettings);
+      annotator.annotate(detected, defaultSettings, t);
 
       const badge = container.querySelector(`.${BADGE_CLASS}`);
       // Com renda de R$5000, 8h/dia, 5d/sem → valorHora ≈ R$28.87
@@ -82,7 +87,7 @@ describe("PriceAnnotator", () => {
       const annotator = new PriceAnnotator();
       const detected = [createDetectedPrice(500)];
 
-      annotator.annotate(detected, defaultSettings);
+      annotator.annotate(detected, defaultSettings, t);
 
       expect(detected[0].anchor.getAttribute(BADGE_ATTR)).toBe("1");
     });
@@ -95,7 +100,7 @@ describe("PriceAnnotator", () => {
         createDetectedPrice(2000),
       ];
 
-      const count = annotator.annotate(detected, defaultSettings);
+      const count = annotator.annotate(detected, defaultSettings, t);
 
       expect(count).toBe(3);
     });
@@ -104,7 +109,7 @@ describe("PriceAnnotator", () => {
       const annotator = new PriceAnnotator();
       const detected = [createDetectedPrice(0)];
 
-      const count = annotator.annotate(detected, defaultSettings);
+      const count = annotator.annotate(detected, defaultSettings, t);
 
       expect(count).toBe(0);
     });
@@ -119,7 +124,7 @@ describe("PriceAnnotator", () => {
         { value: 1000, raw: "R$ 1.000", anchor, textNodes: [] },
       ];
 
-      const count = annotator.annotate(detected, defaultSettings);
+      const count = annotator.annotate(detected, defaultSettings, t);
 
       expect(count).toBe(0);
     });
@@ -129,7 +134,7 @@ describe("PriceAnnotator", () => {
       const detected = [createDetectedPrice(1000)];
       const settings = { ...defaultSettings, rendaMensal: 0 };
 
-      const count = annotator.annotate(detected, settings);
+      const count = annotator.annotate(detected, settings, t);
 
       expect(count).toBe(0);
     });
@@ -143,7 +148,7 @@ describe("PriceAnnotator", () => {
         { value: 1000, raw: "R$ 1.000", anchor: orphanAnchor, textNodes: [] },
       ];
 
-      const count = annotator.annotate(detected, defaultSettings);
+      const count = annotator.annotate(detected, defaultSettings, t);
 
       expect(count).toBe(0);
     });

@@ -1,10 +1,13 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import type { TimeBreakdown } from "@/core/types";
+import { getTranslation } from "@/i18n";
 
 // Mock do CSS inline antes de importar o módulo
 vi.mock("./tooltip.css?inline", () => ({ default: "" }));
 
 import { formatRows, TooltipBuilder } from "./tooltip";
+
+const t = getTranslation("pt-BR");
 
 /**
  * Testes do Tooltip — formatação de dados e criação de Shadow DOM.
@@ -24,7 +27,7 @@ const sampleBreakdown: TimeBreakdown = {
 
 describe("formatRows", () => {
   it("should return 5 rows with correct labels", () => {
-    const rows = formatRows(sampleBreakdown);
+    const rows = formatRows(sampleBreakdown, t);
 
     expect(rows).toHaveLength(5);
     expect(rows.map((r) => r.label)).toEqual([
@@ -37,27 +40,27 @@ describe("formatRows", () => {
   });
 
   it("should format horas with 1 decimal place", () => {
-    const rows = formatRows(sampleBreakdown);
+    const rows = formatRows(sampleBreakdown, t);
     expect(rows[0].value).toBe("34.6h");
   });
 
   it("should format dias with 1 decimal place", () => {
-    const rows = formatRows(sampleBreakdown);
+    const rows = formatRows(sampleBreakdown, t);
     expect(rows[1].value).toBe("4.3 dias");
   });
 
   it("should format semanas with 1 decimal place", () => {
-    const rows = formatRows(sampleBreakdown);
+    const rows = formatRows(sampleBreakdown, t);
     expect(rows[2].value).toBe("0.9 sem");
   });
 
   it("should format meses with 2 decimal places", () => {
-    const rows = formatRows(sampleBreakdown);
+    const rows = formatRows(sampleBreakdown, t);
     expect(rows[3].value).toBe("0.20 meses");
   });
 
   it("should format anos with 2 decimal places", () => {
-    const rows = formatRows(sampleBreakdown);
+    const rows = formatRows(sampleBreakdown, t);
     expect(rows[4].value).toBe("0.02 anos");
   });
 });
@@ -75,7 +78,7 @@ describe("TooltipBuilder", () => {
     const builder = new TooltipBuilder();
     const badge = document.createElement("span");
 
-    builder.setContent(sampleBreakdown);
+    builder.setContent(sampleBreakdown, t);
     builder.attachTo(badge);
 
     expect(badge.contains(builder.getHost())).toBe(true);
@@ -94,7 +97,7 @@ describe("TooltipBuilder", () => {
       const builder = new TooltipBuilder();
       const badge = document.createElement("span");
 
-      builder.setContent(sampleBreakdown);
+      builder.setContent(sampleBreakdown, t);
       builder.attachTo(badge);
 
       // Mouseenter — tooltip should become visible

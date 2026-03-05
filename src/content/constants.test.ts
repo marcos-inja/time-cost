@@ -1,15 +1,15 @@
 import { describe, it, expect } from "vitest";
-import { PRICE_REGEX, SKIP_TAGS, BADGE_ATTR, BADGE_CLASS } from "./constants";
+import { SKIP_TAGS, BADGE_ATTR, BADGE_CLASS } from "./constants";
+import { CURRENCY_CONFIGS } from "@/i18n/currencies";
 
 /**
- * Testes das constantes do content script.
- * Servem como documentação viva e guard contra mudanças acidentais
- * no regex de preço e nas tags ignoradas.
+ * Testes das constantes do content script e regexes de moeda.
+ * Servem como documentação viva e guard contra mudanças acidentais.
  */
 
-describe("PRICE_REGEX", () => {
+describe("BRL PRICE_REGEX", () => {
   function matchAll(text: string): string[] {
-    const regex = new RegExp(PRICE_REGEX.source, "g");
+    const regex = new RegExp(CURRENCY_CONFIGS.BRL.priceRegex.source, "g");
     const matches: string[] = [];
     let m: RegExpExecArray | null;
     while ((m = regex.exec(text)) !== null) matches.push(m[0]);
@@ -46,6 +46,64 @@ describe("PRICE_REGEX", () => {
 
   it("should NOT match USD format ($ 100)", () => {
     expect(matchAll("$ 100")).toEqual([]);
+  });
+});
+
+describe("USD PRICE_REGEX", () => {
+  function matchAll(text: string): string[] {
+    const regex = new RegExp(CURRENCY_CONFIGS.USD.priceRegex.source, CURRENCY_CONFIGS.USD.priceRegex.flags);
+    const matches: string[] = [];
+    let m: RegExpExecArray | null;
+    while ((m = regex.exec(text)) !== null) matches.push(m[0]);
+    return matches;
+  }
+
+  it("should match $1,299.90", () => {
+    expect(matchAll("$1,299.90")).toEqual(["$1,299.90"]);
+  });
+
+  it("should match US$1,299.90", () => {
+    expect(matchAll("US$1,299.90")).toEqual(["US$1,299.90"]);
+  });
+
+  it("should NOT match R$ (BRL)", () => {
+    expect(matchAll("R$1,299.90")).toEqual([]);
+  });
+});
+
+describe("EUR PRICE_REGEX", () => {
+  function matchAll(text: string): string[] {
+    const regex = new RegExp(CURRENCY_CONFIGS.EUR.priceRegex.source, CURRENCY_CONFIGS.EUR.priceRegex.flags);
+    const matches: string[] = [];
+    let m: RegExpExecArray | null;
+    while ((m = regex.exec(text)) !== null) matches.push(m[0]);
+    return matches;
+  }
+
+  it("should match €1.299,90 (prefix)", () => {
+    expect(matchAll("€1.299,90")).toEqual(["€1.299,90"]);
+  });
+
+  it("should match 1.299,90€ (suffix)", () => {
+    expect(matchAll("1.299,90€")).toEqual(["1.299,90€"]);
+  });
+});
+
+describe("GBP PRICE_REGEX", () => {
+  function matchAll(text: string): string[] {
+    const regex = new RegExp(CURRENCY_CONFIGS.GBP.priceRegex.source, CURRENCY_CONFIGS.GBP.priceRegex.flags);
+    const matches: string[] = [];
+    let m: RegExpExecArray | null;
+    while ((m = regex.exec(text)) !== null) matches.push(m[0]);
+    return matches;
+  }
+
+  it("should match £1,299.90", () => {
+    expect(matchAll("£1,299.90")).toEqual(["£1,299.90"]);
+  });
+
+  it("should match £199.90", () => {
+    expect(matchAll("£199.90")).toEqual(["£199.90"]);
   });
 });
 
