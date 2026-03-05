@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import type { UserSettings, DerivedWorkProfile } from "@/core/types";
 import type { TranslationKeys } from "@/i18n/translations";
-import { getCurrencyConfig, getSupportedCurrencies, getSupportedLanguages } from "@/i18n";
+import { getCurrencyConfig } from "@/i18n";
 import styles from "./SettingsForm.module.css";
 
 interface SettingsFormProps {
@@ -47,38 +47,6 @@ export function SettingsForm({ settings, profile, saved, onSave, onReset, t }: S
       <section className={styles.section}>
         <h2 className={styles.sectionTitle}>{t.settings}</h2>
         <div className={styles.fields}>
-          <div className={styles.field}>
-            <label className={styles.label} htmlFor="currency">
-              {t.currency}
-            </label>
-            <select
-              id="currency"
-              className={styles.input}
-              value={settings.currency}
-              onChange={(e) => onSave({ currency: e.target.value })}
-            >
-              {getSupportedCurrencies().map((c) => (
-                <option key={c.code} value={c.code}>{c.label}</option>
-              ))}
-            </select>
-          </div>
-
-          <div className={styles.field}>
-            <label className={styles.label} htmlFor="language">
-              {t.language}
-            </label>
-            <select
-              id="language"
-              className={styles.input}
-              value={settings.language}
-              onChange={(e) => onSave({ language: e.target.value })}
-            >
-              {getSupportedLanguages().map((l) => (
-                <option key={l.code} value={l.code}>{l.label}</option>
-              ))}
-            </select>
-          </div>
-
           <div className={styles.field}>
             <label className={styles.label} htmlFor="rendaMensal">
               {t.monthlyIncome} ({currencyConfig.symbol})

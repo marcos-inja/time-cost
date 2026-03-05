@@ -10,10 +10,11 @@ import { getTranslation, getSupportedLanguages, getSupportedCurrencies } from ".
 describe("translations", () => {
   const referenceKeys = Object.keys(translations["pt-BR"]) as (keyof TranslationKeys)[];
 
-  it("should have pt-BR, en, and es locales", () => {
-    expect(translations["pt-BR"]).toBeDefined();
-    expect(translations["en"]).toBeDefined();
-    expect(translations["es"]).toBeDefined();
+  it("should have all expected locales", () => {
+    const expected = ["pt-BR", "en", "es", "fr", "de", "it", "ja", "ko", "zh-CN", "ru", "ar", "hi", "tr"];
+    for (const locale of expected) {
+      expect(translations[locale], `Missing locale "${locale}"`).toBeDefined();
+    }
   });
 
   for (const locale of Object.keys(translations)) {
@@ -52,17 +53,29 @@ describe("getTranslation", () => {
 });
 
 describe("getSupportedLanguages", () => {
-  it("should return 3 languages", () => {
+  it("should return 13 languages", () => {
     const langs = getSupportedLanguages();
-    expect(langs).toHaveLength(3);
-    expect(langs.map((l) => l.code)).toEqual(["pt-BR", "en", "es"]);
+    expect(langs).toHaveLength(13);
+    expect(langs.map((l) => l.code)).toEqual([
+      "pt-BR", "en", "es", "fr", "de", "it", "ja", "ko", "zh-CN", "ru", "ar", "hi", "tr",
+    ]);
+  });
+
+  it("should have flag and abbr for each language", () => {
+    const langs = getSupportedLanguages();
+    for (const lang of langs) {
+      expect(lang.flag.length, `Missing flag for ${lang.code}`).toBeGreaterThan(0);
+      expect(lang.abbr.length, `Missing abbr for ${lang.code}`).toBeGreaterThan(0);
+    }
   });
 });
 
 describe("getSupportedCurrencies", () => {
-  it("should return 4 currencies", () => {
+  it("should return 14 currencies", () => {
     const currencies = getSupportedCurrencies();
-    expect(currencies).toHaveLength(4);
-    expect(currencies.map((c) => c.code)).toEqual(["BRL", "USD", "EUR", "GBP"]);
+    expect(currencies).toHaveLength(14);
+    expect(currencies.map((c) => c.code)).toEqual([
+      "BRL", "USD", "EUR", "GBP", "JPY", "CNY", "KRW", "INR", "CAD", "AUD", "CHF", "MXN", "ARS", "TRY",
+    ]);
   });
 });

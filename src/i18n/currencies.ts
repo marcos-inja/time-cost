@@ -45,4 +45,84 @@ export const CURRENCY_CONFIGS: Record<string, CurrencyConfig> = {
     locale: "en-GB",
     priceRegex: new RegExp(String.raw`£\s*${PRICE_NUMBER}`, "g"),
   },
+
+  JPY: {
+    code: "JPY",
+    symbol: "¥",
+    label: "JPY (¥)",
+    locale: "ja-JP",
+    priceRegex: new RegExp(String.raw`(?:¥|￥)\s*${PRICE_NUMBER}`, "g"),
+  },
+
+  CNY: {
+    code: "CNY",
+    symbol: "¥",
+    label: "CNY (¥)",
+    locale: "zh-CN",
+    priceRegex: new RegExp(String.raw`(?:¥|￥)\s*${PRICE_NUMBER}`, "g"),
+  },
+
+  KRW: {
+    code: "KRW",
+    symbol: "₩",
+    label: "KRW (₩)",
+    locale: "ko-KR",
+    priceRegex: new RegExp(String.raw`₩\s*${PRICE_NUMBER}`, "g"),
+  },
+
+  INR: {
+    code: "INR",
+    symbol: "₹",
+    label: "INR (₹)",
+    locale: "hi-IN",
+    priceRegex: new RegExp(String.raw`₹\s*${PRICE_NUMBER}`, "g"),
+  },
+
+  CAD: {
+    code: "CAD",
+    symbol: "C$",
+    label: "CAD (C$)",
+    locale: "en-CA",
+    priceRegex: new RegExp(String.raw`C\$\s*${PRICE_NUMBER}`, "g"),
+  },
+
+  AUD: {
+    code: "AUD",
+    symbol: "A$",
+    label: "AUD (A$)",
+    locale: "en-AU",
+    priceRegex: new RegExp(String.raw`A\$\s*${PRICE_NUMBER}`, "g"),
+  },
+
+  CHF: {
+    code: "CHF",
+    symbol: "CHF",
+    label: "CHF (Fr)",
+    locale: "de-CH",
+    priceRegex: new RegExp(String.raw`(?:CHF|Fr\.?)\s*${PRICE_NUMBER}`, "g"),
+  },
+
+  MXN: {
+    code: "MXN",
+    symbol: "MX$",
+    label: "MXN (MX$)",
+    locale: "es-MX",
+    priceRegex: new RegExp(String.raw`MX\$\s*${PRICE_NUMBER}`, "g"),
+  },
+
+  ARS: {
+    code: "ARS",
+    symbol: "AR$",
+    label: "ARS (AR$)",
+    locale: "es-AR",
+    priceRegex: new RegExp(String.raw`AR\$\s*${PRICE_NUMBER}`, "g"),
+  },
+
+  TRY: {
+    code: "TRY",
+    symbol: "₺",
+    label: "TRY (₺)",
+    locale: "tr-TR",
+    priceRegex: new RegExp(String.raw`₺\s*${PRICE_NUMBER}`, "g"),
+  },
 };
