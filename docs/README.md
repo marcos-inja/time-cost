@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="icon.png" width="128" alt="Time Cost" />
+</p>
+
 # Time Cost — Documentation
 
 This folder contains detailed documentation for the Time Cost Chrome extension.

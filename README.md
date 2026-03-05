@@ -1,4 +1,12 @@
+<p align="center">
+  <img src="docs/icon.png" width="128" alt="Time Cost" />
+</p>
+
 # Time Cost
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Chrome](https://img.shields.io/badge/Chrome-Extension-4285F4?logo=googlechrome&logoColor=white)](https://chrome.google.com/webstore)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.7-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 
 Chrome extension that turns prices into working time (hours, days) on any webpage.
 
