@@ -1,44 +1,28 @@
 .toggle {
   display: flex;
   align-items: center;
-  gap: 10px;
-  cursor: pointer;
-  user-select: none;
-  font-size: 13px;
-  color: var(--text-secondary);
-}
-
-.track {
-  position: relative;
-  width: 44px;
-  height: 24px;
-  background: var(--bg-input);
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
   border: 1px solid var(--border);
-  border-radius: 12px;
-  transition: background 200ms ease, border-color 200ms ease;
+  border-radius: var(--radius-sm);
+  background: var(--bg-card);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: background 200ms ease, color 200ms ease, border-color 200ms ease;
 }
 
-.track[data-active="true"] {
-  background: var(--accent);
-  border-color: var(--accent);
+.toggle:hover {
+  background: var(--bg-input);
+  color: var(--text-primary);
 }
 
-.thumb {
-  position: absolute;
-  top: 2px;
-  left: 2px;
-  width: 18px;
-  height: 18px;
-  background: white;
-  border-radius: 50%;
-  transition: transform 200ms ease;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+.toggle:focus-visible {
+  outline: 2px solid var(--border-focus);
+  outline-offset: 2px;
 }
 
-.track[data-active="true"] .thumb {
-  transform: translateX(20px);
-}
-
-.label {
-  font-weight: 500;
+.icon {
+  flex-shrink: 0;
 }

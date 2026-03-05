@@ -39,55 +39,60 @@ export function SettingsForm({ settings, profile, saved, onSave, onReset }: Sett
 
   return (
     <form className={styles.form} onSubmit={handleSubmit}>
-      <div className={styles.field}>
-        <label className={styles.label} htmlFor="rendaMensal">
-          Renda mensal (R$)
-        </label>
-        <input
-          id="rendaMensal"
-          className={styles.input}
-          type="number"
-          min="0"
-          step="100"
-          placeholder="Ex: 5000"
-          value={rendaMensal}
-          onChange={(e) => setRendaMensal(e.target.value)}
-        />
-      </div>
+      <section className={styles.section}>
+        <h2 className={styles.sectionTitle}>Configuração</h2>
+        <div className={styles.fields}>
+          <div className={styles.field}>
+            <label className={styles.label} htmlFor="rendaMensal">
+              Renda mensal (R$)
+            </label>
+            <input
+              id="rendaMensal"
+              className={styles.input}
+              type="number"
+              min="0"
+              step="100"
+              placeholder="Ex: 5000"
+              value={rendaMensal}
+              onChange={(e) => setRendaMensal(e.target.value)}
+            />
+          </div>
 
-      <div className={styles.field}>
-        <label className={styles.label} htmlFor="horasPorDia">
-          Horas por dia
-        </label>
-        <input
-          id="horasPorDia"
-          className={styles.input}
-          type="number"
-          min="1"
-          max="24"
-          step="1"
-          placeholder="Ex: 8"
-          value={horasPorDia}
-          onChange={(e) => setHorasPorDia(e.target.value)}
-        />
-      </div>
+          <div className={styles.field}>
+            <label className={styles.label} htmlFor="horasPorDia">
+              Horas por dia
+            </label>
+            <input
+              id="horasPorDia"
+              className={styles.input}
+              type="number"
+              min="1"
+              max="24"
+              step="1"
+              placeholder="Ex: 8"
+              value={horasPorDia}
+              onChange={(e) => setHorasPorDia(e.target.value)}
+            />
+          </div>
 
-      <div className={styles.field}>
-        <label className={styles.label} htmlFor="diasPorSemana">
-          Dias por semana
-        </label>
-        <input
-          id="diasPorSemana"
-          className={styles.input}
-          type="number"
-          min="1"
-          max="7"
-          step="1"
-          placeholder="Ex: 5"
-          value={diasPorSemana}
-          onChange={(e) => setDiasPorSemana(e.target.value)}
-        />
-      </div>
+          <div className={styles.field}>
+            <label className={styles.label} htmlFor="diasPorSemana">
+              Dias por semana
+            </label>
+            <input
+              id="diasPorSemana"
+              className={styles.input}
+              type="number"
+              min="1"
+              max="7"
+              step="1"
+              placeholder="Ex: 5"
+              value={diasPorSemana}
+              onChange={(e) => setDiasPorSemana(e.target.value)}
+            />
+          </div>
+        </div>
+      </section>
 
       {settings.rendaMensal > 0 && (
         <div className={styles.derived}>
@@ -115,7 +120,9 @@ export function SettingsForm({ settings, profile, saved, onSave, onReset }: Sett
         </button>
       </div>
 
-      {saved && <div className={styles.saved}>Salvo com sucesso!</div>}
+      <div className={styles.feedback}>
+        {saved && <span className={styles.saved}>Salvo com sucesso!</span>}
+      </div>
     </form>
   );
 }
