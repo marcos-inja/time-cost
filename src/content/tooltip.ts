@@ -1,12 +1,12 @@
 import type { TimeBreakdown } from "@/core/types";
 import tooltipCss from "./tooltip.css?inline";
 
-interface TooltipRow {
+export interface TooltipRow {
   label: string;
   value: string;
 }
 
-function formatRows(breakdown: TimeBreakdown): TooltipRow[] {
+export function formatRows(breakdown: TimeBreakdown): TooltipRow[] {
   return [
     { label: "Horas", value: `${breakdown.horas.toFixed(1)}h` },
     { label: "Dias", value: `${breakdown.dias.toFixed(1)} dias` },
