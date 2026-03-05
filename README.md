@@ -36,13 +36,9 @@ For installation details, user guide, and development, see **[Documentation](doc
 
 ## Development
 
-| Command | Description |
-|---------|-------------|
-| `npm run dev` | Start dev server with HMR; output in `dist/` |
-| `npm run build` | Production build into `dist/` |
-| `npm test` | Run tests once |
-| `npm run test:watch` | Run tests in watch mode |
-
-## License
-
-MIT
+| Command              | Description                                  |
+| -------------------- | -------------------------------------------- |
+| `npm run dev`        | Start dev server with HMR; output in `dist/` |
+| `npm run build`      | Production build into `dist/`                |
+| `npm test`           | Run tests once                               |
+| `npm run test:watch` | Run tests in watch mode                      |
