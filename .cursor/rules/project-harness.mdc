@@ -1,0 +1,36 @@
+---
+description: Time Cost (price-in-life) — convenções; fonte de verdade em AGENTS.md e CLAUDE.md.
+alwaysApply: true
+---
+
+# Time Cost — harness do projeto
+
+Para mudanças amplas ou novas features, leia **[AGENTS.md](AGENTS.md)** na raiz do repositório e siga as restrições de camadas e convenções de testes. Para fluxo de agentes no Claude Code, veja **[CLAUDE.md](CLAUDE.md)**.
+
+## Camadas (`src/`)
+
+Dependências só fluem **para baixo**. Respeite a ordem e as importações proibidas descritas em AGENTS.md (validadas por `src/__tests__/architecture.test.ts`).
+
+```
+core/types → core (calculator, priceParser) → i18n → storage → content / popup
+background/ importa apenas core/types
+```
+
+- **`core/`**: sem `storage/`, `content/`, `popup/`.
+- **`storage/`**: sem `content/`, `popup/`, `i18n/`.
+- **`content/`** e **`popup/`**: não cruzem um no outro.
+- **Content script**: não chame `chrome.storage` fora do ponto de entrada — leia em `src/content/index.ts` e repasse.
+- **Manifest / entradas**: `@crxjs/vite-plugin` usa `manifest.json`; não adicione entry points manualmente em `vite.config.ts` além do que o plugin espera.
+
+## Nomenclatura
+
+Não renomeie campos de domínio em português (`rendaMensal`, `horasPorDia`, etc.); strings de UI vão em `i18n/`. Sem barrels `index.ts` dentro das camadas.
+
+## Verificação
+
+Após edições relevantes, na **raiz** do repo:
+
+- `npm run validate` (typecheck → lint → test), preferencialmente antes de encerrar a tarefa.
+- Se houver lógica nova com impacto em cobertura: `npm run test:coverage`.
+
+Moedas e idiomas novos seguem os passos em AGENTS.md (currencies, parsers, traduções e testes colocados ao lado do código).
