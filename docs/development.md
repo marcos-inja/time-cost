@@ -33,6 +33,12 @@ src/
 - **background** — Minimal service worker.
 - **i18n** — `translations.ts`, `currencies.ts`, `index.ts`; languages and currency configs.
 
+## GitHub Actions (releases)
+
+Pushing a **version tag** matching `v*` (for example `v1.0.1`) runs [`.github/workflows/release-extension.yml`](../.github/workflows/release-extension.yml): `npm ci`, `npm run validate`, `npm run build`, then zips the `dist/` folder as `time-cost-<tag>.zip` and attaches it to a **GitHub Release** for that tag.
+
+- **Manual tryout:** run the workflow from the **Actions** tab (**Run workflow** on *Release extension*). The zip appears as a workflow **artifact** (snapshot name), not on the Releases page.
+
 ## Tech stack
 
 - **TypeScript** (strict mode)

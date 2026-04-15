@@ -21,6 +21,12 @@ Chrome extension that turns prices into working time (hours, days) on any webpag
 
 ## Quick start
 
+### Install from a release (no Node.js)
+
+Pre-built zips are attached to each **[GitHub Release](https://github.com/marcos-inja/time-cost/releases)**. Download `time-cost-vX.Y.Z.zip`, extract the folder, then in Chrome open `chrome://extensions` → **Developer mode** → **Load unpacked** and choose that folder. Step-by-step: **[Installation → From GitHub Releases](docs/installation.md#from-github-releases-pre-built)**.
+
+### Develop from source
+
 **Prerequisites:** [Node.js](https://nodejs.org/) 18+, Google Chrome.
 
 ```bash
