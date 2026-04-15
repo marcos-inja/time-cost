@@ -27,6 +27,7 @@ export function App() {
       <header className={styles.header}>
         <div className={styles.titleGroup}>
           <h1 className={styles.title}>Time Cost</h1>
+          <span className={styles.separator} aria-hidden="true">•</span>
           <span className={styles.subtitle}>{t.subtitle}</span>
         </div>
         <div className={styles.headerControls}>

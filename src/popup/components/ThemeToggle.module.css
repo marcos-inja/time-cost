@@ -2,24 +2,36 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 40px;
-  height: 40px;
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
+  min-height: 44px;
   padding: 0;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
+  border: 1px solid var(--input-border);
+  border-radius: var(--radius-card);
   background: var(--bg-card);
   color: var(--text-secondary);
+  box-shadow: var(--shadow-clay);
   cursor: pointer;
-  transition: background 200ms ease, color 200ms ease, border-color 200ms ease;
+  transition: transform 200ms cubic-bezier(0.22, 1, 0.36, 1), box-shadow 200ms ease,
+    background-color 200ms ease, color 200ms ease, border-color 200ms ease;
 }
 
 .toggle:hover {
-  background: var(--bg-input);
-  color: var(--text-primary);
+  background: var(--accent-surface);
+  border-color: var(--slushie-800);
+  color: var(--clay-black);
+  transform: rotateZ(-2deg) translateY(-4px);
+  box-shadow: var(--shadow-hard-offset);
+}
+
+.toggle:active {
+  transform: rotateZ(0deg) translateY(0);
+  box-shadow: var(--shadow-clay);
 }
 
 .toggle:focus-visible {
-  outline: 2px solid var(--border-focus);
+  outline: 2px solid var(--focus-ring);
   outline-offset: 2px;
 }
 

@@ -1,76 +1,107 @@
 .container {
-  width: 340px;
+  width: min(380px, 100vw);
   min-height: 100px;
-  padding: 18px;
+  padding: var(--space-20) var(--space-24);
   background: var(--bg-primary);
+  background-image: linear-gradient(180deg, var(--section-tint) 0%, var(--bg-primary) 48%);
   font-family: var(--font-sans);
+  font-size: var(--text-body-standard);
+  font-weight: var(--weight-body);
+  line-height: 1.5;
+  letter-spacing: -0.01em;
+  font-feature-settings: var(--ot-body);
   color: var(--text-primary);
-  transition: background 200ms ease, color 200ms ease, border-color 200ms ease;
+  overflow-x: hidden;
+  overflow-y: visible;
 }
 
 .header {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 14px;
-  padding-bottom: 12px;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-12);
+  margin-bottom: var(--space-16);
+  padding-bottom: var(--space-12);
   border-bottom: 1px solid var(--border);
 }
 
 .titleGroup {
   display: flex;
-  flex-direction: column;
-  gap: 2px;
+  flex-direction: row;
+  align-items: baseline;
+  flex-wrap: nowrap;
+  gap: var(--space-6);
+  min-width: 0;
+  white-space: nowrap;
 }
 
 .title {
-  font-size: 17px;
-  font-weight: var(--weight-bold);
+  font-size: 1.1rem;
+  font-weight: var(--weight-heading);
+  line-height: 1.4;
+  letter-spacing: -0.02em;
+  font-feature-settings: var(--ot-heading);
   color: var(--text-primary);
   margin: 0;
-  letter-spacing: -0.02em;
-  line-height: 1.25;
+}
+
+.separator {
+  color: var(--warm-silver);
+  font-size: 0.9rem;
+  user-select: none;
 }
 
 .subtitle {
-  font-size: var(--text-small);
-  color: var(--text-muted);
-  font-weight: 500;
+  font-size: 0.85rem;
+  font-weight: var(--weight-body);
+  line-height: 1.5;
+  letter-spacing: -0.01em;
+  color: var(--warm-silver);
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .headerControls {
   display: flex;
   align-items: center;
-  gap: 6px;
+  flex-shrink: 0;
+  gap: var(--space-6);
+  width: 100%;
+  justify-content: flex-start;
 }
 
 .compactSelect {
-  height: 40px;
-  padding: 0 8px;
-  font-size: 13px;
+  min-height: 44px;
+  padding: 0 var(--space-12-8);
+  padding-right: 26px;
+  font-size: 0.94rem; /* Nav link scale */
+  font-weight: var(--weight-ui);
+  line-height: 1.6;
   font-family: var(--font-sans);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
+  font-feature-settings: var(--ot-body);
+  color: var(--text-primary);
+  border: 1px solid var(--input-border);
+  border-radius: var(--radius-card);
   background: var(--bg-card);
-  color: var(--text-secondary);
+  box-shadow: var(--shadow-clay);
   cursor: pointer;
   outline: none;
-  transition: background 200ms ease, color 200ms ease, border-color 200ms ease;
   appearance: none;
   -webkit-appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23888' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  transition: box-shadow 180ms ease, border-color 180ms ease, transform 180ms ease;
+  background-image: url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%2355534e' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
-  background-position: right 6px center;
-  padding-right: 22px;
+  background-position: right 8px center;
 }
 
 .compactSelect:hover {
-  background: var(--bg-input);
-  color: var(--text-primary);
+  border-color: var(--oat-border);
+  box-shadow: var(--shadow-clay), var(--shadow-hard-offset);
+  transform: rotateZ(-3deg) translateY(-2px);
 }
 
 .compactSelect:focus-visible {
-  outline: 2px solid var(--border-focus);
+  outline: 2px solid var(--focus-ring);
   outline-offset: 2px;
 }
 
@@ -81,5 +112,6 @@
   padding: var(--space-xl) 0;
   color: var(--text-muted);
   font-size: var(--text-body);
-  font-weight: var(--weight-semibold);
+  font-weight: var(--weight-ui);
+  font-feature-settings: var(--ot-body);
 }
