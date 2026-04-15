@@ -3,19 +3,55 @@
   bottom: calc(100% + 8px);
   left: 50%;
   transform: translateX(-50%);
-  background: #1e293b;
-  color: #e2e8f0;
   border-radius: 8px;
-  padding: 10px 14px;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  padding: 12px 14px;
+  font-family: "Roobert", "Sora", Arial, sans-serif;
   font-size: 12px;
+  font-weight: 500;
   line-height: 1.6;
+  letter-spacing: -0.01em;
+  font-feature-settings: "ss03" 1, "ss10" 1, "ss11" 1, "ss12" 1;
   white-space: nowrap;
   z-index: 2147483647;
   pointer-events: none;
   opacity: 0;
   transition: opacity 150ms ease;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* Light Theme (Clay Cream/White) */
+.pil-tooltip.light {
+  background: #ffffff;
+  color: #000000;
+  border: 1px solid #dad4c8;
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 1px, rgba(0, 0, 0, 0.04) 0px -1px 1px inset,
+    rgba(0, 0, 0, 0.05) 0px -0.5px 1px;
+}
+.pil-tooltip.light::after {
+  border-top-color: #ffffff;
+}
+.pil-tooltip.light .pil-tooltip-label {
+  color: #9f9b93;
+}
+.pil-tooltip.light .pil-tooltip-value {
+  color: #000000;
+}
+
+/* Dark Theme (Clay Dark) */
+.pil-tooltip.dark {
+  background: #252422;
+  color: #faf9f7;
+  border: 1px solid #525a69;
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 1px 1px, rgba(255, 255, 255, 0.04) 0px -1px 1px inset,
+    rgba(0, 0, 0, 0.2) 0px -0.5px 1px;
+}
+.pil-tooltip.dark::after {
+  border-top-color: #252422;
+}
+.pil-tooltip.dark .pil-tooltip-label {
+  color: #9f9b93;
+}
+.pil-tooltip.dark .pil-tooltip-value {
+  color: #faf9f7;
 }
 
 .pil-tooltip.visible {
@@ -29,7 +65,6 @@
   left: 50%;
   transform: translateX(-50%);
   border: 6px solid transparent;
-  border-top-color: #1e293b;
 }
 
 .pil-tooltip-row {
@@ -39,12 +74,11 @@
 }
 
 .pil-tooltip-label {
-  color: #94a3b8;
   font-weight: 500;
 }
 
 .pil-tooltip-value {
-  color: #f1f5f9;
-  font-weight: 600;
+  font-family: "Space Mono", ui-monospace, monospace;
+  font-weight: 400;
   text-align: right;
 }

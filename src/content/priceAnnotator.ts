@@ -3,7 +3,7 @@ import type { TranslationKeys } from "@/i18n/translations";
 import { SimpleCalculation, formatTimeBreakdown } from "@/core/calculator";
 import { TooltipBuilder } from "./tooltip";
 import type { DetectedPrice } from "./priceDetector";
-import { BADGE_CLASS, BADGE_ATTR, BADGE_STYLE } from "./constants";
+import { BADGE_CLASS, BADGE_ATTR, getBadgeStyle } from "./constants";
 
 export class PriceAnnotator {
   private calculator = new SimpleCalculation();
@@ -23,10 +23,10 @@ export class PriceAnnotator {
 
       const badge = document.createElement("span");
       badge.className = BADGE_CLASS;
-      badge.style.cssText = BADGE_STYLE;
+      badge.style.cssText = getBadgeStyle(settings.theme || "light");
       badge.textContent = ` (${formatTimeBreakdown(breakdown, t)})`;
 
-      const tooltip = new TooltipBuilder();
+      const tooltip = new TooltipBuilder(settings.theme || "light");
       tooltip.setContent(breakdown, t);
       tooltip.attachTo(badge);
 

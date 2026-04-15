@@ -23,7 +23,7 @@ export class TooltipBuilder {
   private tooltipEl: HTMLElement;
   private hideTimeout: ReturnType<typeof setTimeout> | null = null;
 
-  constructor() {
+  constructor(theme: "light" | "dark" = "light") {
     this.shadowHost = document.createElement("span");
     this.shadowHost.style.position = "relative";
     this.shadowHost.style.display = "inline";
@@ -35,7 +35,7 @@ export class TooltipBuilder {
     this.shadowRoot.appendChild(style);
 
     this.tooltipEl = document.createElement("div");
-    this.tooltipEl.className = "pil-tooltip";
+    this.tooltipEl.className = `pil-tooltip ${theme}`;
     this.shadowRoot.appendChild(this.tooltipEl);
   }
 
