@@ -1,72 +1,179 @@
-/* Layered button style (light & dark) */
+/**
+ * Design tokens — Clay-inspired warm system (see DESIGN.md).
+ * Primary UI font stack: Roobert when installed/locally available; Sora as open web fallback with compatible stylistic alternates.
+ */
+
+:root {
+  /* ── Swatch palette ── */
+  --clay-black: #000000;
+  --pure-white: #ffffff;
+  --warm-cream: #faf9f7;
+
+  --matcha-300: #84e7a5;
+  --matcha-600: #078a52;
+  --matcha-800: #02492a;
+
+  --slushie-500: #3bd3fd;
+  --slushie-800: #0089ad;
+
+  --lemon-400: #f8cc65;
+  --lemon-500: #fbbd41;
+  --lemon-700: #d08a11;
+  --lemon-800: #9d6a09;
+
+  --ube-300: #c1b0ff;
+  --ube-800: #43089f;
+  --ube-900: #32037d;
+
+  --pomegranate-400: #fc7981;
+
+  --blueberry-800: #01418d;
+
+  /* Dragonfruit — not hex-listed in DESIGN; deep magenta for ghost hover */
+  --dragonfruit-700: #b30059;
+
+  --warm-silver: #9f9b93;
+  --warm-charcoal: #55534e;
+  --dark-charcoal: #333333;
+
+  --oat-border: #dad4c8;
+  --oat-light: #eee9df;
+  --cool-border: #e6e8ec;
+  --dark-border: #525a69;
+  --input-border: #717989;
+
+  --badge-blue-bg: #f0f8ff;
+  --badge-blue-text: #3859f9;
+
+  --focus-ring: rgb(20, 110, 245);
+
+  --btn-hover-dark: #434346;
+
+  /* OpenType — Roobert identity; harmless on Sora/fallbacks */
+  --ot-heading: "ss01" 1, "ss03" 1, "ss10" 1, "ss11" 1, "ss12" 1;
+  --ot-body: "ss03" 1, "ss10" 1, "ss11" 1, "ss12" 1;
+
+  /* Shadows (Clay) */
+  --shadow-clay: rgba(0, 0, 0, 0.1) 0px 1px 1px, rgba(0, 0, 0, 0.04) 0px -1px 1px inset,
+    rgba(0, 0, 0, 0.05) 0px -0.5px 1px;
+  --shadow-hard-offset: rgb(0, 0, 0) -7px 7px;
+
+  /* Radius scale */
+  --radius-sharp: 4px;
+  --radius-standard: 8px;
+  --radius-badge: 11px;
+  --radius-card: 12px;
+  --radius-feature: 24px;
+  --radius-section: 40px;
+  --radius-pill: 1584px;
+
+  /* Spacing (8px base) */
+  --space-1: 1px;
+  --space-2: 2px;
+  --space-4: 4px;
+  --space-6: 6px;
+  --space-6-4: 6.4px;
+  --space-8: 8px;
+  --space-12: 12px;
+  --space-12-8: 12.8px;
+  --space-16: 16px;
+  --space-18: 18px;
+  --space-20: 20px;
+  --space-24: 24px;
+
+  /* Typography roles */
+  --font-sans: "Roobert", "Sora", Arial, sans-serif;
+  --font-mono: "Space Mono", ui-monospace, monospace;
+
+  --text-feature-title: 1.25rem; /* 20px */
+  --text-body: 1.125rem; /* 18px */
+  --text-body-standard: 1rem; /* 16px */
+  --text-caption: 0.88rem; /* ~14px */
+  --text-small: 0.75rem; /* 12px */
+  --text-uppercase-label: 0.75rem;
+
+  --weight-heading: 600;
+  --weight-ui: 500;
+  --weight-body: 400;
+
+  /* Legacy aliases used in modules — map to Clay weights */
+  --weight-semibold: 600;
+  --weight-bold: 600;
+
+  --text-title: var(--text-feature-title);
+  --text-subtitle: var(--text-body);
+  --radius: var(--radius-feature);
+  --radius-sm: var(--radius-sharp);
+  --space-xs: var(--space-4);
+  --space-sm: var(--space-8);
+  --space-md: var(--space-16);
+  --space-lg: var(--space-24);
+  --space-xl: 32px;
+}
 
 :root,
 [data-theme="light"] {
-  /* Surfaces */
-  --bg-primary: #f8fafc;
-  --bg-secondary: #ffffff;
-  --bg-card: #ffffff;
-  --bg-input: #f1f5f9;
-  /* Text */
-  --text-primary: #0f172a;
-  --text-secondary: #475569;
-  --text-muted: #64748b;
-  /* Primary */
-  --accent: #2F39BA;
-  --accent-hover: #252ea0;
-  --accent-light: rgba(47, 57, 186, 0.1);
-  /* Hard shadow button colors */
-  --btn-layer-1: #F092DD;
-  --btn-border-dark: #0B0D2A;
-  --btn-secondary-layer-1: #cbd5e1;
-  /* Borders & focus */
-  --border: #e2e8f0;
-  --border-focus: #2563eb;
-  --success: #16a34a;
-  /* Layout */
-  --radius: 12px;
-  --radius-sm: 8px;
-  --radius-pill: 9999px;
-  --space-xs: 4px;
-  --space-sm: 8px;
-  --space-md: 16px;
-  --space-lg: 24px;
-  --space-xl: 32px;
-  /* Typography */
-  --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  --text-title: 20px;
-  --text-subtitle: 13px;
-  --text-body: 14px;
-  --text-caption: 12px;
-  --text-small: 11px;
-  --weight-semibold: 600;
-  --weight-bold: 700;
-  /* Shadows */
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
-  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.07), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
-  --shadow-input-inset: inset 0 1px 2px rgba(0, 0, 0, 0.06);
-  --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px -1px rgba(0, 0, 0, 0.04);
+  --bg-primary: var(--warm-cream);
+  --bg-secondary: var(--pure-white);
+  --bg-card: var(--pure-white);
+  --bg-input: var(--pure-white);
+
+  --text-primary: var(--clay-black);
+  --text-secondary: var(--warm-charcoal);
+  --text-muted: var(--warm-silver);
+
+  --accent: var(--matcha-600);
+  --accent-hover: var(--matcha-800);
+  --accent-light: color-mix(in srgb, var(--matcha-300) 35%, transparent);
+  --accent-surface: var(--slushie-500);
+
+  --border: var(--oat-border);
+  --border-subtle: var(--oat-light);
+  --border-focus: var(--focus-ring);
+
+  --success: var(--matcha-600);
+
+  --section-tint: color-mix(in srgb, var(--lemon-400) 22%, var(--warm-cream));
+
+  --shadow-card: var(--shadow-clay);
+  --shadow-input-inset: rgba(0, 0, 0, 0.04) 0px -1px 1px inset;
 }
 
 [data-theme="dark"] {
-  --bg-primary: #0f172a;
-  --bg-secondary: #1e293b;
-  --bg-card: #1e293b;
-  --bg-input: #334155;
-  --text-primary: #f8fafc;
-  --text-secondary: #cbd5e1;
-  --text-muted: #94a3b8;
-  --accent: #4f56d8;
-  --accent-hover: #6269e6;
-  --accent-light: rgba(79, 86, 216, 0.15);
-  --btn-layer-1: #7c3a6e;
-  --btn-border-dark: #0f1128;
-  --btn-secondary-layer-1: #475569;
-  --border: #334155;
-  --border-focus: #3b82f6;
-  --success: #22c55e;
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
-  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -2px rgba(0, 0, 0, 0.2);
-  --shadow-input-inset: inset 0 1px 2px rgba(0, 0, 0, 0.2);
-  --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.2), 0 1px 2px -1px rgba(0, 0, 0, 0.15);
+  --bg-primary: #1c1b19;
+  --bg-secondary: #252422;
+  --bg-card: #252422;
+  --bg-input: #2e2c29;
+
+  --text-primary: var(--warm-cream);
+  --text-secondary: var(--oat-light);
+  --text-muted: var(--warm-silver);
+
+  --accent: var(--matcha-300);
+  --accent-hover: var(--matcha-300);
+  --accent-light: color-mix(in srgb, var(--matcha-600) 45%, transparent);
+  --accent-surface: var(--slushie-500);
+
+  --border: color-mix(in srgb, var(--oat-border) 55%, transparent);
+  --border-subtle: var(--dark-border);
+  --border-focus: var(--focus-ring);
+
+  --success: var(--matcha-300);
+
+  --section-tint: color-mix(in srgb, var(--blueberry-800) 35%, #1c1b19);
+
+  --shadow-card: rgba(0, 0, 0, 0.35) 0px 1px 1px, rgba(255, 255, 255, 0.04) 0px -1px 1px inset,
+    rgba(0, 0, 0, 0.2) 0px -0.5px 1px;
+  --shadow-input-inset: rgba(0, 0, 0, 0.25) 0px -1px 1px inset;
+}
+
+html {
+  font-family: var(--font-sans);
+  font-feature-settings: var(--ot-body);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2 {
+  font-feature-settings: var(--ot-heading);
 }
